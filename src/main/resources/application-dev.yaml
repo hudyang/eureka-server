@@ -1,0 +1,40 @@
+#端口设置=================================================================
+server:
+  port: ${SERVER_PORT:2221}
+#注册中心配置============================================================
+eureka:
+  instance:
+    #ip配置不配置的话，会根据操作系统的主机名来获取
+    hostname: ${EUREKA_INSTANCE_HOSTNAME:${spring.cloud.client.ip-address}}
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+    prefer-ip-address: true
+    #心跳设置，告诉服务器该实例仍在使用 默认30s
+    lease-renewal-interval-in-seconds: ${EUREKA_INSTANCE_INTERVAL_SECONDS:30}
+    #告诉服务器如果15秒内未发送任何续约请求，则关闭该客户端 默认90s
+    lease-expiration-duration-in-seconds: ${EUREKA_INSTANCE_DURATION_SECONDS:90}
+  client:
+    #是否注册服务 默认true
+    register-with-eureka: ${CLENT_REGISTER_WITH:false}
+    #是否需要检索服务 默认true
+    fetch-registry: ${CLENT_FETCH_REGISTRY:false}
+    #  为了性能考虑，eureka server 会维护一份只读的服务清单返回给客户端，同时该缓存清单会每隔30s更新一次
+    registry-fetch-interval-seconds: ${CLIENT_FETCH_INTERVAL_SECONDS:30}
+    #服务地址
+    serviceUrl:
+#      defaultZone:  ${EUREKA_SERVER:http://${spring.cloud.client.ip-address}:${server.port}/eureka}
+      defaultZone:  ${EUREKA_SERVER:http://${spring.cloud.client.ip-address}:${server.port}/eureka}
+  server:
+    #是否开启注册保护机制
+    enableSelfPreservation: ${SERVER_ENABLE_SELF_PRESERVATION:false}
+    #默认60s 主动失效, 并且每次主动失效检测间隔
+    #    eviction-interval-timer-in-ms: ${SERVER_EVICTION_INTERVAL_TIMER_IN_MS:3000}
+    #失效剔除 默认30s
+    #    responseCacheUpdateInvervalMs: ${SERVER_RESPONSE_CACHE_UPDATE_INVERVAL:3000}
+    #默认180s
+#    responseCacheAutoExpirationInSeconds: ${SERVER_RESPONSE_CACHE_AUTO_EXPIRATION_IN_SECONDS:15}
+#日志配置============================================================
+logback:
+  path: /data/logs
+  serviceName: eureka-server
+logging:
+  config: classpath:logback/logback-spring.xml
